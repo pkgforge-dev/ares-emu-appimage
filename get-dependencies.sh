@@ -34,7 +34,6 @@ pacman -Syu --noconfirm \
 	libdecor \
 	libgl \
 	libpulse \
-	librashader \
 	libretro-shaders \
 	libx11 \
 	libxrandr \
