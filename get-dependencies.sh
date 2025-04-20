@@ -36,7 +36,6 @@ pacman -Syu --noconfirm \
 	libpulse \
 	librashader \
 	libretro-shaders \
-	libudev \
 	libx11 \
 	libxrandr \
 	libxss \
@@ -58,6 +57,16 @@ pacman -Syu --noconfirm \
 	zlib \
 	zsync
 
+# Make librashader
+echo "Making extra dependencies..."
+echo "---------------------------------------------------------------"
+git clone "https://aur.archlinux.org/librashader.git" ./libreshader
+( cd ./libreshader
+  makepkg -f
+  ls -la .
+  pacman --noconfirm -U *.pkg.tar.*
+)
+
 echo "Installing debloated pckages..."
 echo "---------------------------------------------------------------"
 wget --retry-connrefused --tries=30 "$LLVM_URL" -O   ./llvm-libs.pkg.tar.zst
@@ -69,5 +78,3 @@ rm -f ./*.pkg.tar.zst
 
 echo "All done!"
 echo "---------------------------------------------------------------"
-
-
