@@ -45,7 +45,7 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v4.4.3
       with:
-        name: AppImage
+        name: AppImage-${{ matrix.arch }}
         path: 'dist'
         
     - name: Upload version file
@@ -53,6 +53,7 @@ jobs:
       with:
        name: version
        path: ~/version
+       overwrite: true
     
   release:
       needs: [build]
@@ -60,10 +61,15 @@ jobs:
       runs-on: ubuntu-latest
 
       steps:
-        - uses: actions/download-artifact@v4.1.8
+        - uses: actions/download-artifact@v4.1.9
           with:
-            name: AppImage
-        - uses: actions/download-artifact@v4.1.8
+            name: AppImage-x86_64
+
+        - uses: actions/download-artifact@v4.1.9
+          with:
+            name: AppImage-aarch64
+
+        - uses: actions/download-artifact@v4.1.9
           with:
             name: version
 
