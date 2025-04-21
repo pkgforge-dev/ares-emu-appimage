@@ -37,7 +37,7 @@ jobs:
         mv *.AppImage* dist/
 
     - name: Check version file
-      if: ${{ matrix.arch == x86_64 }}
+      if: ${{ matrix.arch == 'x86_64' }}
       run: |
        cat ~/version
        echo "APP_VERSION=$(cat ~/version)" >> "${GITHUB_ENV}"
