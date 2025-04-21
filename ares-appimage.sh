@@ -9,12 +9,12 @@ REPO="https://github.com/ares-emulator/ares"
 LIB4BN="https://raw.githubusercontent.com/VHSgunzo/sharun/refs/heads/main/lib4bin"
 URUNTIME="https://github.com/VHSgunzo/uruntime/releases/latest/download/uruntime-appimage-dwarfs-$ARCH"
 UPINFO="gh-releases-zsync|$(echo "$GITHUB_REPOSITORY" | tr '/' '|')|latest|*$ARCH.AppImage.zsync"
-VERSION=test
-echo "$VERSION" > ~/version
 
 # BUILD ARES
 git clone "$REPO" ./ares && (
 	cd ./ares
+	VERSION="$(git rev-parse --short HEAD)"
+	echo "$VERSION" > ~/version
 
 	# backport fix from aur package
 	sed -i \
@@ -33,6 +33,7 @@ git clone "$REPO" ./ares && (
 	cmake --install .
 )
 rm -rf ./ares
+VERSION="$(cat ~/version)"
 
 # NOW MAKE APPIMAGE
 mkdir ./AppDir
