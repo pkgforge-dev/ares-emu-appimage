@@ -47,6 +47,7 @@ pacman -Syu --noconfirm \
 	pkgconf \
 	pulseaudio \
 	pulseaudio-alsa \
+	rust \
 	sdl2 \
 	strace \
 	vulkan-driver \
