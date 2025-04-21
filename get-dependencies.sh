@@ -59,6 +59,14 @@ pacman -Syu --noconfirm \
 # Make librashader
 echo "Making extra dependencies..."
 echo "---------------------------------------------------------------"
+
+# fix nonsense
+sed -i 's|EUID == 0|EUID == 69|g' /usr/bin/makepkg
+mkdir -p /usr/local/bin
+cp /usr/bin/makepkg /usr/local/bin
+sed -i 's|-O2|-O3|; s|MAKEFLAGS=.*|MAKEFLAGS="-j$(nproc)"|; s|#MAKEFLAGS|MAKEFLAGS|' /etc/makepkg.conf
+cat /etc/makepkg.conf
+
 git clone "https://aur.archlinux.org/librashader.git" ./libreshader
 ( cd ./libreshader
   makepkg -f
