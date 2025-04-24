@@ -25,7 +25,7 @@ git clone "$REPO" ./ares && (
 	cd ./build
 	cmake .. -G Ninja \
 		-W no-dev \
-		-D CMAKE_BUILD_TYPE=MinSizeRel \
+		-D CMAKE_BUILD_TYPE=Release \
 		-D CMAKE_INSTALL_PREFIX="/usr" \
 		-D ARES_SKIP_DEPS=ON \
 		--fresh
