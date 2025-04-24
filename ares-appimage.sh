@@ -47,6 +47,7 @@ xvfb-run -a -- ./lib4bin -p -v -e -s -k \
 	/usr/lib/libGLX* \
 	/usr/lib/libGL.so* \
 	/usr/lib/libXss.so* \
+	/usr/lib/gtk-3*/*/* \
 	/usr/lib/gio/modules/* \
 	/usr/lib/gdk-pixbuf-*/*/*/* \
 	/usr/lib/alsa-lib/* \
