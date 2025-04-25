@@ -7,14 +7,19 @@ export ARCH="$(uname -m)"
 
 REPO="https://github.com/ares-emulator/ares"
 LIB4BN="https://raw.githubusercontent.com/VHSgunzo/sharun/refs/heads/main/lib4bin"
+GRON="https://raw.githubusercontent.com/xonixx/gron.awk/refs/heads/main/gron.awk"
 URUNTIME="https://github.com/VHSgunzo/uruntime/releases/latest/download/uruntime-appimage-dwarfs-$ARCH"
 UPINFO="gh-releases-zsync|$(echo "$GITHUB_REPOSITORY" | tr '/' '|')|latest|*$ARCH.AppImage.zsync"
 
 # BUILD ARES
-git clone "$REPO" ./ares && (
+wget "$GRON" -O ./gron.awk
+chmod +x ./gron.awk
+VERSION=$(wget https://api.github.com/repos/ares-emulator/ares/tags -O - \
+	| ./gron.awk | awk -F'=|"' '/name/ {print $3; exit}')
+echo "$VERSION" > ~/version
+
+git clone --branch "$VERSION" --single-branch "$REPO" ./ares && (
 	cd ./ares
-	VERSION="$(git rev-parse --short HEAD)"
-	echo "$VERSION" > ~/version
 
 	# backport fix from aur package
 	sed -i \
@@ -33,7 +38,6 @@ git clone "$REPO" ./ares && (
 	cmake --install .
 )
 rm -rf ./ares
-VERSION="$(cat ~/version)"
 
 # NOW MAKE APPIMAGE
 mkdir ./AppDir
