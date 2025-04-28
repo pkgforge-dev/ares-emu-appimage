@@ -77,7 +77,9 @@ jobs:
           run: |
             cat version
             export VERSION="$(cat version)"
+            export SNAPSHOT_TAG="$(date --utc +'%Y%m%d-%H%M%S')"
             echo "APP_VERSION=${VERSION}" >> "${GITHUB_ENV}"
+            echo SNAPSHOT_TAG="${SNAPSHOT_TAG}" >> "${GITHUB_ENV}"
     
         #Version Release
         - name: Del Previous Release
@@ -87,10 +89,11 @@ jobs:
           env:
             GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           continue-on-error: true
-  
+
+        - name: Release nightly build
         - uses: softprops/action-gh-release@v2
           with:
-            name: "Continuous Build (${{ env.APP_VERSION }})"
+            name: "Nightliy Build (${{ env.SNAPSHOT_TAG }})"
             tag_name: "nightly"
             prerelease: true
             draft: false
