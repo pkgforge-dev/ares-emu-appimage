@@ -77,7 +77,7 @@ jobs:
           run: |
             cat version
             export VERSION="$(cat version)"
-            export SNAPSHOT_TAG="$(date --utc +'%Y%m%d-%H%M%S')"
+            export SNAPSHOT_TAG="$(date --utc +'%Y-%m-%d')"
             echo "APP_VERSION=${VERSION}" >> "${GITHUB_ENV}"
             echo SNAPSHOT_TAG="${SNAPSHOT_TAG}" >> "${GITHUB_ENV}"
     
