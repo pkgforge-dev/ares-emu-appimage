@@ -49,6 +49,7 @@ pacman -Syu --noconfirm \
 	pulseaudio-alsa \
 	rust \
 	sdl2 \
+	sdl3 \
 	strace \
 	vulkan-driver \
 	vulkan-icd-loader \
@@ -77,8 +78,8 @@ cp /usr/bin/makepkg /usr/local/bin
 sed -i 's|-O2|-O3|; s|MAKEFLAGS=.*|MAKEFLAGS="-j$(nproc)"|; s|#MAKEFLAGS|MAKEFLAGS|' /etc/makepkg.conf
 cat /etc/makepkg.conf
 
-git clone "https://aur.archlinux.org/librashader.git" ./libreshader
-( cd ./libreshader
+git clone "https://aur.archlinux.org/librashader.git" ./librashader
+( cd ./librashader
   makepkg -f
   ls -la .
   pacman --noconfirm -U *.pkg.tar.*
