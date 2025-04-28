@@ -14,7 +14,7 @@ URUNTIME="https://github.com/VHSgunzo/uruntime/releases/latest/download/uruntime
 if [ "$1" = 'devel' ]; then
 	echo "Making nightly build of ares..."
 	UPINFO="gh-releases-zsync|$(echo "$GITHUB_REPOSITORY" | tr '/' '|')|nightly|*$ARCH.AppImage.zsync"
-	VERSION="$(git ls-remote https://github.com/ares-emulator/ares HEAD | cut -c 1-9)"
+	VERSION="$(git ls-remote "$REPO" HEAD | cut -c 1-9)"
 	git clone "$REPO"
 else
 	echo "Making stable build of ares..."
