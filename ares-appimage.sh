@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -eux
+set -ex
 
 export APPIMAGE_EXTRACT_AND_RUN=1
 export ARCH="$(uname -m)"
@@ -9,16 +9,27 @@ REPO="https://github.com/ares-emulator/ares"
 LIB4BN="https://raw.githubusercontent.com/VHSgunzo/sharun/refs/heads/main/lib4bin"
 GRON="https://raw.githubusercontent.com/xonixx/gron.awk/refs/heads/main/gron.awk"
 URUNTIME="https://github.com/VHSgunzo/uruntime/releases/latest/download/uruntime-appimage-dwarfs-$ARCH"
-UPINFO="gh-releases-zsync|$(echo "$GITHUB_REPOSITORY" | tr '/' '|')|latest|*$ARCH.AppImage.zsync"
 
-# BUILD ARES
-wget "$GRON" -O ./gron.awk
-chmod +x ./gron.awk
-VERSION=$(wget https://api.github.com/repos/ares-emulator/ares/tags -O - \
-	| ./gron.awk | awk -F'=|"' '/name/ {print $3; exit}')
+# Determine to build nightly or stable
+if [ "$1" = 'devel' ]; then
+	echo "Making nightly build of ares..."
+	UPINFO="gh-releases-zsync|$(echo "$GITHUB_REPOSITORY" | tr '/' '|')|nightly|*$ARCH.AppImage.zsync"
+	VERSION="$(git ls-remote https://github.com/ares-emulator/ares HEAD | cut -c 1-9)"
+	git clone "$REPO"
+else
+	echo "Making stable build of ares..."
+	UPINFO="gh-releases-zsync|$(echo "$GITHUB_REPOSITORY" | tr '/' '|')|latest|*$ARCH.AppImage.zsync"
+	wget "$GRON" -O ./gron.awk
+	chmod +x ./gron.awk
+	VERSION=$(wget https://api.github.com/repos/ares-emulator/ares/tags -O - \
+		| ./gron.awk | awk -F'=|"' '/name/ {print $3; exit}')
+	git clone --branch "$VERSION" --single-branch "$REPO" ./ares
+fi
+
 echo "$VERSION" > ~/version
 
-git clone --branch "$VERSION" --single-branch "$REPO" ./ares && (
+# BUILD ARES
+(
 	cd ./ares
 
 	# backport fix from aur package
