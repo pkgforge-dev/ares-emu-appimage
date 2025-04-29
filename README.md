@@ -4,3 +4,8 @@
 It is a descendant of [higan](https://github.com/higan-emu/higan) and [bsnes](https://github.com/bsnes-emu/bsnes/), and focuses on accuracy and preservation.
 
 This repository provides an unofficial AppImage for ares to use on your Linux System.
+
+* [Latest Stable Release](https://github.com/pkgforge-dev/ares-emu-appimage/releases/latest)
+
+* [Latest Nightly Release](https://github.com/pkgforge-dev/ares-emu-appimage/releases/tag/nightly)
+
