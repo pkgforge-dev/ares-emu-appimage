@@ -59,8 +59,7 @@ chmod +x ./lib4bin
 xvfb-run -a -- ./lib4bin -p -v -e -s -k \
 	/usr/bin/ares \
 	/usr/bin/sourcery \
-	/usr/lib/libGLX* \
-	/usr/lib/libGL.so* \
+	/usr/lib/lib*GL*.so* \
 	/usr/lib/libXss.so* \
 	/usr/lib/gtk-3*/*/* \
 	/usr/lib/gio/modules/* \
@@ -68,7 +67,7 @@ xvfb-run -a -- ./lib4bin -p -v -e -s -k \
 	/usr/lib/alsa-lib/* \
 	/usr/lib/pulseaudio/* \
 	/usr/lib/pipewire-0.3/* \
-	/usr/lib/spa-0.2/*/*
+	/usr/lib/spa-0.2/*/* || true # nobody saw a thing ok?
 
 cp -rv /usr/share/ares                                ./share
 cp -v /usr/share/applications/ares.desktop            ./ares.desktop
