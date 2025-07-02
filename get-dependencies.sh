@@ -70,7 +70,9 @@ cat /etc/makepkg.conf
 
 git clone "https://aur.archlinux.org/librashader.git" ./librashader
 ( cd ./librashader
+  export RUSTC_WRAPPER="sccache"
   makepkg -f
+  sccache --show-stats
   ls -la .
   pacman --noconfirm -U *.pkg.tar.*
 )
