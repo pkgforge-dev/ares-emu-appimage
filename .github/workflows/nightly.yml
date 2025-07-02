@@ -26,6 +26,7 @@ jobs:
       CCACHE_DIR: ${{ github.workspace }}/.ccache
       CCACHE_COMPILERCHECK: content
       CCACHE_SLOPPINESS: time_macros
+      SCCACHE_GHA_ENABLED: "true"
     steps:
     - uses: actions/checkout@v4
     
@@ -37,6 +38,9 @@ jobs:
         restore-keys: |
               ${{ runner.os }}-ccache-nightly-${{ matrix.arch }}-
               
+    - name: set up sccache-cache
+      uses: mozilla-actions/sccache-action@v0.0.9
+      
     - name: Get dependencies
       if: always()
       run: chmod +x ./get-dependencies.sh && ./get-dependencies.sh
