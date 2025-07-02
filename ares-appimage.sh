@@ -46,6 +46,7 @@ echo "$VERSION" > ~/version
 		--fresh
 	cmake --build . -j"$(nproc)"
 	cmake --install .
+ 	ccache -s -v
 )
 rm -rf ./ares
 
