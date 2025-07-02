@@ -1,62 +1,57 @@
 #!/bin/sh
 
 set -ex
-
-sed -i 's/DownloadUser/#DownloadUser/g' /etc/pacman.conf
-
-if [ "$(uname -m)" = 'x86_64' ]; then
-	PKG_TYPE='x86_64.pkg.tar.zst'
-else
-	PKG_TYPE='aarch64.pkg.tar.xz'
-fi
-
-LLVM_URL="https://github.com/pkgforge-dev/llvm-libs-debloated/releases/download/continuous/llvm-libs-mini-$PKG_TYPE"
-LIBXML_URL="https://github.com/pkgforge-dev/llvm-libs-debloated/releases/download/continuous/libxml2-iculess-$PKG_TYPE"
-OPUS_URL="https://github.com/pkgforge-dev/llvm-libs-debloated/releases/download/continuous/opus-nano-$PKG_TYPE"
+ARCH="$(uname -m)"
 
 echo "Installing dependencies..."
 echo "---------------------------------------------------------------"
 pacman -Syu --noconfirm \
-	alsa-lib \
-	base-devel \
-	cairo \
-	cmake \
-	curl \
-	desktop-file-utils \
-	gcc-libs \
-	gdk-pixbuf2 \
-	git \
-	glib2 \
-	glibc \
-	gtk3 \
+	alsa-lib           \
+	base-devel         \
+	cmake              \
+	curl               \
+	gcc-libs           \
+	git                \
+	glibc              \
+	gtk3               \
 	hicolor-icon-theme \
-	libao \
-	libdecor \
-	libgl \
-	libpulse \
-	libretro-shaders \
-	libx11 \
-	libxrandr \
-	libxss \
-	mesa \
-	ninja \
-	openal \
-	pango \
-	patchelf \
-	pipewire-audio \
-	pkgconf \
-	pulseaudio \
-	pulseaudio-alsa \
-	rust \
-	sdl2 \
-	sdl3 \
-	strace \
-	vulkan-driver \
-	vulkan-icd-loader \
-	wget \
-	xorg-server-xvfb \
-	zlib \
+	libao              \
+	libdecor           \
+	libgl              \
+	libpulse           \
+	libretro-shaders   \
+	libx11             \
+	libxrandr          \
+	libxss             \
+	mesa               \
+	ninja              \
+	openal             \
+	pango              \
+	patchelf           \
+	pipewire-audio     \
+	pkgconf            \
+	pulseaudio         \
+	pulseaudio-alsa    \
+	rust               \
+	sdl2               \
+	sdl3               \
+	strace             \
+	vulkan-driver      \
+	vulkan-icd-loader  \
+	wget               \
+	xorg-server-xvfb   \
+	zlib               \
 	zsync
+
+case "$ARCH" in
+	'x86_64')  PKG_TYPE='x86_64.pkg.tar.zst';;
+	'aarch64') PKG_TYPE='aarch64.pkg.tar.xz';;
+	''|*) echo "Unknown arch: $ARCH"; exit 1;;
+esac
+
+LLVM_URL="https://github.com/pkgforge-dev/llvm-libs-debloated/releases/download/continuous/llvm-libs-mini-$PKG_TYPE"
+LIBXML_URL="https://github.com/pkgforge-dev/llvm-libs-debloated/releases/download/continuous/libxml2-iculess-$PKG_TYPE"
+OPUS_URL="https://github.com/pkgforge-dev/llvm-libs-debloated/releases/download/continuous/opus-nano-$PKG_TYPE"
 
 echo "Installing debloated pckages..."
 echo "---------------------------------------------------------------"
@@ -73,8 +68,6 @@ echo "---------------------------------------------------------------"
 
 # fix nonsense
 sed -i 's|EUID == 0|EUID == 69|g' /usr/bin/makepkg
-mkdir -p /usr/local/bin
-cp /usr/bin/makepkg /usr/local/bin
 sed -i 's|-O2|-O3|; s|MAKEFLAGS=.*|MAKEFLAGS="-j$(nproc)"|; s|#MAKEFLAGS|MAKEFLAGS|' /etc/makepkg.conf
 cat /etc/makepkg.conf
 
