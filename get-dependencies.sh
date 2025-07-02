@@ -9,6 +9,7 @@ pacman -Syu --noconfirm \
 	alsa-lib           \
 	base-devel         \
 	cmake              \
+	ccache             \
 	curl               \
 	gcc-libs           \
 	git                \
