@@ -27,14 +27,10 @@ jobs:
 
     - name: Get dependencies
       if: always()
-      run: |
-        chmod +x ./get-dependencies.sh && ./get-dependencies.sh
+      run: chmod +x ./get-dependencies.sh && ./get-dependencies.sh
 
     - name: Make AppImage
-      run: |
-        chmod +x ./ares-appimage.sh && ./ares-appimage.sh devel
-        mkdir dist
-        mv *.AppImage* dist/
+      run: chmod +x ./ares-appimage.sh && ./ares-appimage.sh devel
 
     - name: Check version file
       if: ${{ matrix.arch == 'x86_64' }}
@@ -73,19 +69,14 @@ jobs:
           with:
             name: version
 
-        - name: Read version
+        - name: Read version and Get date
           run: |
-            cat version
-            export VERSION="$(cat version)"
-            export SNAPSHOT_TAG="$(date --utc +'%Y-%m-%d')"
-            echo "APP_VERSION=${VERSION}" >> "${GITHUB_ENV}"
-            echo SNAPSHOT_TAG="${SNAPSHOT_TAG}" >> "${GITHUB_ENV}"
+            echo "VERSION=$(cat version)" >> "${GITHUB_ENV}"
+            echo "DATE=$(date +'%Y-%m-%d_%s')" >> "${GITHUB_ENV}"
     
         #Version Release
         - name: Del Previous Release
-          run: |
-            gh release delete "nightly" --repo "${GITHUB_REPOSITORY}" --cleanup-tag  -y
-            sleep 5
+          run: gh release delete "nightly" --repo "${GITHUB_REPOSITORY}" --cleanup-tag -y && sleep 5
           env:
             GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           continue-on-error: true
@@ -93,7 +84,7 @@ jobs:
         - name: Release nightly build
           uses: softprops/action-gh-release@v2.2.2
           with:
-            name: "Nightly Build (${{ env.SNAPSHOT_TAG }})"
+            name: "Nightly Build (${{ env.DATE }})"
             tag_name: "nightly"
             prerelease: true
             draft: false
