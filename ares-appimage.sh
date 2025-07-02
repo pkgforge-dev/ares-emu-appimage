@@ -99,7 +99,7 @@ echo "Generating AppImage..."
 	--compression zstd:level=22 -S26 -B8 \
 	--header uruntime-lite               \
 	-i ./AppDir                          \
-	-o ./Torzu-"$VERSION"-anylinux-"$ARCH".AppImage
+	-o ./ares-"$VERSION"-anylinux-"$ARCH".AppImage
 
 echo "Generating zsync file..."
 zsyncmake ./*.AppImage -u ./*.AppImage
