@@ -17,7 +17,6 @@ pacman -Syu --noconfirm \
 	hicolor-icon-theme \
 	libao              \
 	libdecor           \
-	libgl              \
 	libpulse           \
 	libretro-shaders   \
 	libx11             \
@@ -26,8 +25,6 @@ pacman -Syu --noconfirm \
 	mesa               \
 	ninja              \
 	openal             \
-	pango              \
-	patchelf           \
 	pipewire-audio     \
 	pkgconf            \
 	pulseaudio         \
@@ -35,7 +32,6 @@ pacman -Syu --noconfirm \
 	rust               \
 	sdl2               \
 	sdl3               \
-	strace             \
 	vulkan-driver      \
 	vulkan-icd-loader  \
 	wget               \
