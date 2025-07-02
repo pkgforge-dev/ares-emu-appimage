@@ -1,6 +1,6 @@
 name: Appimage Nightly
 concurrency:
-  group: build-${{ github.ref }}
+  group: build-nightly-${{ github.ref }}
   cancel-in-progress: true
 
 on:
