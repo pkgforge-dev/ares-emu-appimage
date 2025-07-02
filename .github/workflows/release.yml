@@ -27,14 +27,10 @@ jobs:
 
     - name: Get dependencies
       if: always()
-      run: |
-        chmod +x ./get-dependencies.sh && ./get-dependencies.sh
+      run: chmod +x ./get-dependencies.sh && ./get-dependencies.sh
 
     - name: Make AppImage
-      run: |
-        chmod +x ./ares-appimage.sh && ./ares-appimage.sh
-        mkdir dist
-        mv *.AppImage* dist/
+      run: chmod +x ./ares-appimage.sh && ./ares-appimage.sh
 
     - name: Check version file
       if: ${{ matrix.arch == 'x86_64' }}
@@ -56,6 +52,7 @@ jobs:
        overwrite: true
     
   release:
+      if: ${{ github.ref_name == 'main' }}
       needs: [build]
       permissions: write-all
       runs-on: ubuntu-latest
@@ -72,49 +69,20 @@ jobs:
         - uses: actions/download-artifact@v4.3.0
           with:
             name: version
+  
+        - name: Read version and Get date
+          run: |
+            echo "VERSION=$(cat version)" >> "${GITHUB_ENV}"
+            echo "DATE=$(date +'%Y-%m-%d_%s')" >> "${GITHUB_ENV}"
 
-        - name: Read version
-          run: |
-            cat version
-            export VERSION="$(cat version)"
-            echo "APP_VERSION=${VERSION}" >> "${GITHUB_ENV}"
-    
-        #Version Release
-        - name: Del Previous Release
-          run: |
-            gh release delete "${APP_VERSION}" --repo "${GITHUB_REPOSITORY}" --cleanup-tag  -y
-            sleep 5
-          env:
-            GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          continue-on-error: true
-        - name: Continuous Releaser
+        - name: Release Artifacts
           uses: softprops/action-gh-release@v2.2.2
           with:
-            name: "ares AppImage ${{ env.APP_VERSION }}"
-            tag_name: "${{ env.APP_VERSION }}"
+            name: "ares: ${{ env.VERSION }}"
+            tag_name: "${{ env.VERSION }}@${{ env.DATE }}"
             prerelease: false
             draft: false
             generate_release_notes: false
             make_latest: true
             files: |
               *.AppImage*
-          continue-on-error: false
-
-        #Snapshot Release
-        - name: Get Date
-          run: |
-            SNAPSHOT_TAG="$(date --utc +'%Y%m%d-%H%M%S')"
-            echo SNAPSHOT_TAG="${SNAPSHOT_TAG}" >> "${GITHUB_ENV}"
-          continue-on-error: false
-        - name: Snapshot Releaser
-          uses: softprops/action-gh-release@v2.2.2
-          with:
-            name: "Snapshot ${{ env.APP_VERSION }}"
-            tag_name: "${{ env.SNAPSHOT_TAG }}"
-            prerelease: false
-            draft: false
-            generate_release_notes: false
-            make_latest: false
-            files: |
-              *.AppImage*
-          continue-on-error: false

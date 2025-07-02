@@ -1,14 +1,12 @@
 #!/bin/sh
 
 set -ex
-
-export APPIMAGE_EXTRACT_AND_RUN=1
-export ARCH="$(uname -m)"
-
+ARCH="$(uname -m)"
 REPO="https://github.com/ares-emulator/ares"
-LIB4BN="https://raw.githubusercontent.com/VHSgunzo/sharun/refs/heads/main/lib4bin"
+SHARUN="https://github.com/VHSgunzo/sharun/releases/latest/download/sharun-$ARCH-aio"
 GRON="https://raw.githubusercontent.com/xonixx/gron.awk/refs/heads/main/gron.awk"
 URUNTIME="https://github.com/VHSgunzo/uruntime/releases/latest/download/uruntime-appimage-dwarfs-$ARCH"
+URUNTIME_LITE="https://github.com/VHSgunzo/uruntime/releases/latest/download/uruntime-appimage-dwarfs-lite-$ARCH"
 
 # Determine to build nightly or stable
 if [ "$1" = 'devel' ]; then
@@ -51,50 +49,62 @@ echo "$VERSION" > ~/version
 rm -rf ./ares
 
 # NOW MAKE APPIMAGE
-mkdir ./AppDir
-cd ./AppDir
-
-wget --retry-connrefused --tries=30 "$LIB4BN" -O ./lib4bin
-chmod +x ./lib4bin
-xvfb-run -a -- ./lib4bin -p -v -e -s -k \
-	/usr/bin/ares \
-	/usr/bin/sourcery \
-	/usr/lib/lib*GL*.so* \
-	/usr/lib/libXss.so* \
-	/usr/lib/gtk-3*/*/* \
-	/usr/lib/gio/modules/* \
-	/usr/lib/gdk-pixbuf-*/*/*/* \
-	/usr/lib/alsa-lib/* \
-	/usr/lib/pulseaudio/* \
-	/usr/lib/pipewire-0.3/* \
-	/usr/lib/spa-0.2/*/* || true # nobody saw a thing ok?
-
-cp -rv /usr/share/ares                                ./share
-cp -v /usr/share/applications/ares.desktop            ./ares.desktop
-cp -v /usr/share/icons/hicolor/256x256/apps/ares.png  ./ares.png
-ln -s ./ares.png ./.DirIcon
-
-# Prepare sharun
-ln ./sharun ./AppRun
-./sharun -g
+mkdir -p ./AppDir/share && (
+	cd ./AppDir
+	cp -rv /usr/share/ares                                ./share
+	cp -v /usr/share/applications/ares.desktop            ./ares.desktop
+	cp -v /usr/share/icons/hicolor/256x256/apps/ares.png  ./ares.png
+	cp -v /usr/share/icons/hicolor/256x256/apps/ares.png  ./.DirIcon
+	
+	wget --retry-connrefused --tries=30 "$SHARUN" -O ./sharun-aio
+	chmod +x ./sharun-aio
+	xvfb-run -a -- \
+		./sharun-aio l -p -v -e -s -k \
+		/usr/bin/ares                 \
+		/usr/bin/sourcery             \
+		/usr/lib/lib*GL*.so*          \
+		/usr/lib/dri/*                \
+		/usr/lib/libXss.so*           \
+		/usr/lib/gtk-3*/*/*           \
+		/usr/lib/gio/modules/*        \
+		/usr/lib/gdk-pixbuf-*/*/*/*   \
+		/usr/lib/alsa-lib/*           \
+		/usr/lib/pulseaudio/*         \
+		/usr/lib/pipewire-0.3/*       \
+		/usr/lib/spa-0.2/*/* || true # nobody saw a thing ok?
+	rm -f ./sharun-aio
+	
+	# Prepare sharun
+	ln ./sharun ./AppRun
+	./sharun -g
+	
+	# Make intel video hardware accel work
+	echo 'LIBVA_DRIVERS_PATH=${SHARUN_DIR}/shared/lib:${SHARUN_DIR}/shared/lib/dri' >> ./.env
+)
 
 # turn appdir into appimage
-cd ..
-wget -q "$URUNTIME" -O ./uruntime
-chmod +x ./uruntime
+wget --retry-connrefused --tries=30 "$URUNTIME"      -O  ./uruntime
+wget --retry-connrefused --tries=30 "$URUNTIME_LITE" -O  ./uruntime-lite
+chmod +x ./uruntime*
 
 #Add udpate info to runtime
 echo "Adding update information \"$UPINFO\" to runtime..."
-./uruntime --appimage-addupdinfo "$UPINFO"
+./uruntime-lite --appimage-addupdinfo "$UPINFO"
 
 echo "Generating AppImage..."
-./uruntime --appimage-mkdwarfs -f \
-	--set-owner 0 --set-group 0 \
-	--no-history --no-create-timestamp \
+./uruntime \
+	--appimage-mkdwarfs -f               \
+	--set-owner 0 --set-group 0          \
+	--no-history --no-create-timestamp   \
 	--compression zstd:level=22 -S26 -B8 \
-	--header uruntime \
-	-i ./AppDir -o ares-"$VERSION"-anylinux-"$ARCH".AppImage
+	--header uruntime-lite               \
+	-i ./AppDir                          \
+	-o ./ares-"$VERSION"-anylinux-"$ARCH".AppImage
 
 echo "Generating zsync file..."
-zsyncmake *.AppImage -u *.AppImage
+zsyncmake ./*.AppImage -u ./*.AppImage
+
+mkdir -p ./dist
+mv -v ./*.AppImage* ./dist
+
 echo "All Done!"
