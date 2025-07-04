@@ -22,9 +22,25 @@ jobs:
             name: "ares build"
             arch: aarch64
     container: ghcr.io/pkgforge-dev/archlinux:latest
+    env:
+      CCACHE_DIR: ${{ github.workspace }}/.ccache
+      CCACHE_COMPILERCHECK: content
+      CCACHE_SLOPPINESS: time_macros
+      SCCACHE_GHA_ENABLED: "true"
     steps:
     - uses: actions/checkout@v4
-
+    
+    - name: Set up ccache for ${{ matrix.arch }}
+      uses: actions/cache@v4.2.3
+      with:
+        path: ${{ env.CCACHE_DIR }}
+        key: ${{ runner.os }}-ccache-release-${{ matrix.arch }}-${{ github.sha }}
+        restore-keys: |
+              ${{ runner.os }}-ccache-release-${{ matrix.arch }}-
+              
+    - name: set up sccache-cache
+      uses: mozilla-actions/sccache-action@v0.0.9
+      
     - name: Get dependencies
       if: always()
       run: chmod +x ./get-dependencies.sh && ./get-dependencies.sh

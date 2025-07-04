@@ -9,6 +9,7 @@ pacman -Syu --noconfirm \
 	alsa-lib           \
 	base-devel         \
 	cmake              \
+	ccache             \
 	curl               \
 	gcc-libs           \
 	git                \
@@ -69,7 +70,9 @@ cat /etc/makepkg.conf
 
 git clone "https://aur.archlinux.org/librashader.git" ./librashader
 ( cd ./librashader
+  export RUSTC_WRAPPER="sccache"
   makepkg -f
+  sccache --show-stats
   ls -la .
   pacman --noconfirm -U *.pkg.tar.*
 )

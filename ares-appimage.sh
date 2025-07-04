@@ -40,11 +40,13 @@ echo "$VERSION" > ~/version
 	cmake .. -G Ninja \
 		-W no-dev \
 		-D CMAKE_BUILD_TYPE=Release \
+  		-D ENABLE_CCACHE=ON \
 		-D CMAKE_INSTALL_PREFIX="/usr" \
 		-D ARES_SKIP_DEPS=ON \
 		--fresh
 	cmake --build . -j"$(nproc)"
 	cmake --install .
+ 	ccache -s -v
 )
 rm -rf ./ares
 
