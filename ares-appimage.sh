@@ -42,6 +42,7 @@ echo "$VERSION" > ~/version
 		-D CMAKE_BUILD_TYPE=Release \
   		-D ENABLE_CCACHE=ON \
 		-D CMAKE_INSTALL_PREFIX="/usr" \
+  		-D ARES_BUILD_OFFICIAL=YES \
 		-D ARES_SKIP_DEPS=ON \
 		--fresh
 	cmake --build . -j"$(nproc)"
