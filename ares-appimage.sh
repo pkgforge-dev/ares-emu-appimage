@@ -80,9 +80,6 @@ mkdir -p ./AppDir/share && (
 	# Prepare sharun
 	ln ./sharun ./AppRun
 	./sharun -g
-	
-	# Make intel video hardware accel work
-	echo 'LIBVA_DRIVERS_PATH=${SHARUN_DIR}/shared/lib:${SHARUN_DIR}/shared/lib/dri' >> ./.env
 )
 
 # turn appdir into appimage
