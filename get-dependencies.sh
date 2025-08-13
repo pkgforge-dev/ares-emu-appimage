@@ -68,7 +68,23 @@ sed -i 's|EUID == 0|EUID == 69|g' /usr/bin/makepkg
 sed -i 's|-O2|-O3|; s|MAKEFLAGS=.*|MAKEFLAGS="-j$(nproc)"|; s|#MAKEFLAGS|MAKEFLAGS|' /etc/makepkg.conf
 cat /etc/makepkg.conf
 
-git clone "https://aur.archlinux.org/librashader.git" ./librashader
+
+COUNT=0
+while [ "$COUNT" -le 5 ]; do
+	if ! git clone "https://aur.archlinux.org/librashader.git" ./librashader; then
+		rm -rf ./librashader
+		COUNT=$((COUNT + 1))
+		echo "Failed, trying $COUNT time"
+	else
+		break
+	fi
+done
+
+if [ "$COUNT" -gt 5 ]; then
+	echo "Failed to build libxml2 5 times"
+	exit 1
+fi
+
 ( cd ./librashader
   export RUSTC_WRAPPER="sccache"
   makepkg -f
