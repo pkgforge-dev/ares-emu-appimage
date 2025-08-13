@@ -81,7 +81,7 @@ while [ "$COUNT" -le 5 ]; do
 done
 
 if [ "$COUNT" -gt 5 ]; then
-	echo "Failed to build libxml2 5 times"
+	echo "Failed to clone librashader 5 times"
 	exit 1
 fi
 
