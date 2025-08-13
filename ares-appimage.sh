@@ -3,10 +3,7 @@
 set -ex
 ARCH="$(uname -m)"
 REPO="https://github.com/ares-emulator/ares"
-SHARUN="https://github.com/VHSgunzo/sharun/releases/latest/download/sharun-$ARCH-aio"
 GRON="https://raw.githubusercontent.com/xonixx/gron.awk/refs/heads/main/gron.awk"
-URUNTIME="https://github.com/VHSgunzo/uruntime/releases/latest/download/uruntime-appimage-dwarfs-$ARCH"
-URUNTIME_LITE="https://github.com/VHSgunzo/uruntime/releases/latest/download/uruntime-appimage-dwarfs-lite-$ARCH"
 
 # Determine to build nightly or stable
 if [ "$1" = 'devel' ]; then
@@ -23,8 +20,6 @@ else
 		| ./gron.awk | awk -F'=|"' '/name/ {print $3; exit}')
 	git clone --branch "$VERSION" --single-branch "$REPO" ./ares
 fi
-
-echo "$VERSION" > ~/version
 
 # BUILD ARES
 (
@@ -50,59 +45,30 @@ echo "$VERSION" > ~/version
  	ccache -s -v
 )
 rm -rf ./ares
+[ -n "$VERSION" ] && echo "$VERSION" > ~/version
 
 # NOW MAKE APPIMAGE
-mkdir -p ./AppDir/share && (
-	cd ./AppDir
-	cp -rv /usr/share/ares                                ./share
-	cp -v /usr/share/applications/ares.desktop            ./ares.desktop
-	cp -v /usr/share/icons/hicolor/256x256/apps/ares.png  ./ares.png
-	cp -v /usr/share/icons/hicolor/256x256/apps/ares.png  ./.DirIcon
-	
-	wget --retry-connrefused --tries=30 "$SHARUN" -O ./sharun-aio
-	chmod +x ./sharun-aio
-	xvfb-run -a -- \
-		./sharun-aio l -p -v -e -s -k \
-		/usr/bin/ares                 \
-		/usr/bin/sourcery             \
-		/usr/lib/lib*GL*.so*          \
-		/usr/lib/dri/*                \
-		/usr/lib/libXss.so*           \
-		/usr/lib/gtk-3*/*/*           \
-		/usr/lib/gio/modules/*        \
-		/usr/lib/gdk-pixbuf-*/*/*/*   \
-		/usr/lib/alsa-lib/*           \
-		/usr/lib/pulseaudio/*         \
-		/usr/lib/pipewire-0.3/*       \
-		/usr/lib/spa-0.2/*/* || true # nobody saw a thing ok?
-	rm -f ./sharun-aio
-	
-	# Prepare sharun
-	ln ./sharun ./AppRun
-	./sharun -g
-)
+URUNTIME="https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/refs/heads/main/useful-tools/uruntime2appimage.sh"
+SHARUN="https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/refs/heads/main/useful-tools/quick-sharun.sh"
+
+export ADD_HOOKS="self-updater.bg.hook"
+export UPINFO="gh-releases-zsync|${GITHUB_REPOSITORY%/*}|${GITHUB_REPOSITORY#*/}|latest|*$ARCH.AppImage.zsync"
+export OUTNAME=ares-"$VERSION"-anylinux-"$ARCH".AppImage
+export DESKTOP=/usr/share/applications/ares.desktop
+export ICON=/usr/share/icons/hicolor/256x256/apps/ares.png
+export DEPLOY_OPENGL=1 
+export DEPLOY_PIPEWIRE=1
+
+# ADD LIBRARIES
+wget --retry-connrefused --tries=30 "$SHARUN" -O ./quick-sharun
+chmod +x ./quick-sharun
+./quick-sharun /usr/bin/ares /usr/bin/sourcery
+cp -rv /usr/share/ares  ./AppDir/share
 
 # turn appdir into appimage
-wget --retry-connrefused --tries=30 "$URUNTIME"      -O  ./uruntime
-wget --retry-connrefused --tries=30 "$URUNTIME_LITE" -O  ./uruntime-lite
-chmod +x ./uruntime*
-
-#Add udpate info to runtime
-echo "Adding update information \"$UPINFO\" to runtime..."
-./uruntime-lite --appimage-addupdinfo "$UPINFO"
-
-echo "Generating AppImage..."
-./uruntime \
-	--appimage-mkdwarfs -f               \
-	--set-owner 0 --set-group 0          \
-	--no-history --no-create-timestamp   \
-	--compression zstd:level=22 -S26 -B8 \
-	--header uruntime-lite               \
-	-i ./AppDir                          \
-	-o ./ares-"$VERSION"-anylinux-"$ARCH".AppImage
-
-echo "Generating zsync file..."
-zsyncmake ./*.AppImage -u ./*.AppImage
+wget --retry-connrefused --tries=30 "$URUNTIME" -O ./uruntime2appimage
+chmod +x ./uruntime2appimage
+./uruntime2appimage
 
 mkdir -p ./dist
 mv -v ./*.AppImage* ./dist
