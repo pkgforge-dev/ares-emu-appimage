@@ -27,7 +27,6 @@ pacman -Syu --noconfirm \
 	pulseaudio         \
 	pulseaudio-alsa    \
 	rust               \
-	sdl2               \
 	sdl3               \
 	wget               \
 	xorg-server-xvfb   \
