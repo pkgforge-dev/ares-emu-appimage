@@ -1,3 +1,5 @@
+
+
 name: Appimage
 concurrency:
   group: build-${{ github.ref }}
@@ -45,11 +47,27 @@ jobs:
       if: always()
       run: chmod +x ./get-dependencies.sh && ./get-dependencies.sh
 
+    - name: Make AppImage
+      run: chmod +x ./ares-appimage.sh && ./ares-appimage.sh
+    
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4.6.2
+      with:
+        name: AppImage-${{ matrix.arch }}
+        path: 'dist'
+        
+    - name: Upload version file
+      uses: actions/upload-artifact@v4.6.2
+      with:
+       name: version
+       path: ~/version
+       overwrite: true
+    
   release:
-    if: ${{ github.ref_name == 'main' }}
-    needs: [build]
-    permissions: write-all
-    runs-on: ubuntu-latest
+      if: ${{ github.ref_name == 'main' }}
+      needs: [build]
+      permissions: write-all
+      runs-on: ubuntu-latest
 
       steps:
         - uses: actions/download-artifact@v5.0.0
