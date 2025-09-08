@@ -28,10 +28,10 @@ jobs:
       CCACHE_SLOPPINESS: time_macros
       SCCACHE_GHA_ENABLED: "true"
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     
     - name: Set up ccache for ${{ matrix.arch }}
-      uses: actions/cache@v4.2.3
+      uses: actions/cache@v4.2.4
       with:
         path: ${{ env.CCACHE_DIR }}
         key: ${{ runner.os }}-ccache-nightly-${{ matrix.arch }}-${{ github.sha }}
@@ -74,15 +74,15 @@ jobs:
       runs-on: ubuntu-latest
 
       steps:
-        - uses: actions/download-artifact@v4.3.0
+        - uses: actions/download-artifact@v5.0.0
           with:
             name: AppImage-x86_64
 
-        - uses: actions/download-artifact@v4.3.0
+        - uses: actions/download-artifact@v5.0.0
           with:
             name: AppImage-aarch64
 
-        - uses: actions/download-artifact@v4.3.0
+        - uses: actions/download-artifact@v5.0.0
           with:
             name: version
 
@@ -99,7 +99,7 @@ jobs:
           continue-on-error: true
 
         - name: Release nightly build
-          uses: softprops/action-gh-release@v2.2.2
+          uses: softprops/action-gh-release@v2.3.3
           with:
             name: "Nightly Build (${{ env.DATE }})"
             tag_name: "nightly"
