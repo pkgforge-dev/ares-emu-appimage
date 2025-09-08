@@ -1,5 +1,3 @@
-
-
 name: Appimage
 concurrency:
   group: build-${{ github.ref }}
