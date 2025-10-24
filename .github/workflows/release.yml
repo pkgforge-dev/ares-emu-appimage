@@ -68,15 +68,15 @@ jobs:
       runs-on: ubuntu-latest
 
       steps:
-        - uses: actions/download-artifact@v5.0.0
+        - uses: actions/download-artifact@v6.0.0
           with:
             name: AppImage-x86_64
 
-        - uses: actions/download-artifact@v5.0.0
+        - uses: actions/download-artifact@v6.0.0
           with:
             name: AppImage-aarch64
 
-        - uses: actions/download-artifact@v5.0.0
+        - uses: actions/download-artifact@v6.0.0
           with:
             name: version
   
