@@ -44,6 +44,12 @@ fi
 	cmake --install .
  	ccache -s -v
 )
+
+# wtf is going on
+xvfb-run -a /usr/bin/ares
+exit
+
+
 rm -rf ./ares
 [ -n "$VERSION" ] && echo "$VERSION" > ~/version
 
