@@ -24,21 +24,17 @@ fi
 # BUILD ARES
 (
 	cd ./ares
-
-	# backport fix from aur package
-	sed -i \
-	  "s/virtual auto saveName() -> string { return pak->attribute(\"name\"); }/virtual auto saveName() -> string { return name(); }/g" \
-	  ./mia/pak/pak.hpp
-
 	mkdir ./build
 	cd ./build
 	cmake .. -G Ninja \
 		-W no-dev \
-		-D CMAKE_BUILD_TYPE=Release \
-  		-D ENABLE_CCACHE=ON \
+		-D CMAKE_BUILD_TYPE=Release    \
+  		-D ENABLE_CCACHE=ON            \
+		-D ARES_BUNDLE_SHADERS=OFF     \
+		-D ARES_BUILD_LOCAL=OFF        \
 		-D CMAKE_INSTALL_PREFIX="/usr" \
-  		-D ARES_BUILD_OFFICIAL=YES \
-		-D ARES_SKIP_DEPS=ON \
+  		-D ARES_BUILD_OFFICIAL=YES     \
+		-D ARES_SKIP_DEPS=ON           \
 		--fresh
 	cmake --build . -j"$(nproc)"
 	cmake --install .
