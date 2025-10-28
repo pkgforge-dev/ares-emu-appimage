@@ -30,7 +30,7 @@ fi
 		-W no-dev \
 		-D CMAKE_BUILD_TYPE=Release    \
   		-D ENABLE_CCACHE=ON            \
-		-D ARES_BUNDLE_SHADERS=OFF     \
+		-D ARES_BUNDLE_SHADERS=ON      \
 		-D ARES_BUILD_LOCAL=OFF        \
 		-D CMAKE_INSTALL_PREFIX="/usr" \
   		-D ARES_BUILD_OFFICIAL=YES     \
