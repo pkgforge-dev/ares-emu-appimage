@@ -54,11 +54,6 @@ export ICON=/usr/share/icons/hicolor/256x256/apps/ares.png
 export DEPLOY_OPENGL=1 
 export DEPLOY_PIPEWIRE=1
 
-# "fix" xvfb-run failing to kill the process in aarch64
-if [ "$ARCH" = "aarch64" ]; then
-	sed -i 's#kill $XVFBPID#kill $XVFBPID || true#' "$(command -v xvfb-run)"
-fi
-
 # ADD LIBRARIES
 wget --retry-connrefused --tries=30 "$SHARUN" -O ./quick-sharun
 chmod +x ./quick-sharun
