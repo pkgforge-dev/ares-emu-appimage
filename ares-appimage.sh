@@ -24,21 +24,17 @@ fi
 # BUILD ARES
 (
 	cd ./ares
-
-	# backport fix from aur package
-	sed -i \
-	  "s/virtual auto saveName() -> string { return pak->attribute(\"name\"); }/virtual auto saveName() -> string { return name(); }/g" \
-	  ./mia/pak/pak.hpp
-
 	mkdir ./build
 	cd ./build
 	cmake .. -G Ninja \
 		-W no-dev \
-		-D CMAKE_BUILD_TYPE=Release \
-  		-D ENABLE_CCACHE=ON \
+		-D CMAKE_BUILD_TYPE=Release    \
+  		-D ENABLE_CCACHE=ON            \
+		-D ARES_BUNDLE_SHADERS=ON      \
+		-D ARES_BUILD_LOCAL=OFF        \
 		-D CMAKE_INSTALL_PREFIX="/usr" \
-  		-D ARES_BUILD_OFFICIAL=YES \
-		-D ARES_SKIP_DEPS=ON \
+  		-D ARES_BUILD_OFFICIAL=YES     \
+		-D ARES_SKIP_DEPS=ON           \
 		--fresh
 	cmake --build . -j"$(nproc)"
 	cmake --install .
@@ -57,11 +53,6 @@ export DESKTOP=/usr/share/applications/ares.desktop
 export ICON=/usr/share/icons/hicolor/256x256/apps/ares.png
 export DEPLOY_OPENGL=1 
 export DEPLOY_PIPEWIRE=1
-
-# "fix" xvfb-run failing to kill the process in aarch64
-if [ "$ARCH" = "aarch64" ]; then
-	sed -i 's#kill $XVFBPID#kill $XVFBPID || true#' "$(command -v xvfb-run)"
-fi
 
 # ADD LIBRARIES
 wget --retry-connrefused --tries=30 "$SHARUN" -O ./quick-sharun

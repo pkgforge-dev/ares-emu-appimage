@@ -6,31 +6,31 @@ EXTRA_PACKAGES="https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImage
 echo "Installing dependencies..."
 echo "---------------------------------------------------------------"
 pacman -Syu --noconfirm \
-	base-devel         \
-	cmake              \
-	ccache             \
-	curl               \
-	gcc-libs           \
-	git                \
-	gtk3               \
-	libao              \
-	libdecor           \
-	libpulse           \
-	libretro-shaders   \
-	libx11             \
-	libxrandr          \
-	libxss             \
-	ninja              \
-	openal             \
-	pipewire-audio     \
-	pkgconf            \
-	pulseaudio         \
-	pulseaudio-alsa    \
-	rust               \
-	sdl3               \
-	wget               \
-	xorg-server-xvfb   \
-	zlib               \
+	base-devel             \
+	cmake                  \
+	ccache                 \
+	curl                   \
+	gcc-libs               \
+	git                    \
+	gtk3                   \
+	libao                  \
+	libdecor               \
+	libpulse               \
+	libretro-shaders-slang \
+	libx11                 \
+	libxrandr              \
+	libxss                 \
+	ninja                  \
+	openal                 \
+	pipewire-audio         \
+	pkgconf                \
+	pulseaudio             \
+	pulseaudio-alsa        \
+	rust                   \
+	sdl3                   \
+	wget                   \
+	xorg-server-xvfb       \
+	zlib                   \
 	zsync
 
 
