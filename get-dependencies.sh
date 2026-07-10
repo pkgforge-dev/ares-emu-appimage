@@ -9,11 +9,10 @@ pacman -Syu --noconfirm \
 	base-devel             \
 	cmake                  \
 	ccache                 \
+	clang                  \
 	curl                   \
-	gcc-libs               \
 	git                    \
 	gtk3                   \
-	libao                  \
 	libdecor               \
 	libpulse               \
 	libretro-shaders-slang \
@@ -21,7 +20,6 @@ pacman -Syu --noconfirm \
 	libxrandr              \
 	libxss                 \
 	ninja                  \
-	openal                 \
 	pipewire-audio         \
 	pkgconf                \
 	pulseaudio             \
