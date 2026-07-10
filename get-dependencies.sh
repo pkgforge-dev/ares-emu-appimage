@@ -14,6 +14,7 @@ pacman -Syu --noconfirm \
 	git                    \
 	gtk3                   \
 	libdecor               \
+	libpulse               \
 	libretro-shaders-slang \
 	libx11                 \
 	libxrandr              \
@@ -21,6 +22,8 @@ pacman -Syu --noconfirm \
 	ninja                  \
 	pipewire-audio         \
 	pkgconf                \
+	pulseaudio             \
+	pulseaudio-alsa        \
 	rust                   \
 	sdl3                   \
 	wget                   \
