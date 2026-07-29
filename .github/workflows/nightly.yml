@@ -39,7 +39,7 @@ jobs:
               ${{ runner.os }}-ccache-nightly-${{ matrix.arch }}-
               
     - name: set up sccache-cache
-      uses: mozilla-actions/sccache-action@v0.0.9
+      uses: mozilla-actions/sccache-action@v0.0.11
       
     - name: Get dependencies
       if: always()
