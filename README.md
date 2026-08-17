@@ -1,14 +1,39 @@
-![ares logo](https://raw.githubusercontent.com/ares-emulator/ares/refs/heads/master/ares/ares/resource/logo.png)
+<div align="center">
+
+# ares-emu-AppImage 🐧
 
 [![GitHub Downloads](https://img.shields.io/github/downloads/pkgforge-dev/ares-emu-appimage/total?logo=github&label=GitHub%20Downloads)](https://github.com/pkgforge-dev/ares-emu-appimage/releases/latest)
-[![CI Build Status](https://github.com//pkgforge-dev/ares-emu-appimage/actions/workflows/release.yml/badge.svg)](https://github.com/pkgforge-dev/ares-emu-appimage/releases/latest)
+[![CI Build Status](https://github.com/pkgforge-dev/ares-emu-appimage/actions/workflows/appimage.yml/badge.svg)](https://github.com/pkgforge-dev/ares-emu-appimage/releases/latest)
+[![Latest Stable Release](https://img.shields.io/github/v/release/pkgforge-dev/ares-emu-appimage)](https://github.com/pkgforge-dev/ares-emu-appimage/releases/latest)
 
-**[ares](https://github.com/ares-emulator/ares)** is a multi-system emulator that began development on October 14th, 2004.
-It is a descendant of [higan](https://github.com/higan-emu/higan) and [bsnes](https://github.com/bsnes-emu/bsnes/), and focuses on accuracy and preservation.
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ares-emulator/ares/refs/heads/master/ares/ares/resource/logo.png" width="128" />
+</p>
 
-This repository provides an unofficial AppImage for ares to use on your Linux System.
+| Latest Stable Release | Latest Nightly Release | Upstream URL |
+| :---: | :---: | :---: |
+| [Click here](https://github.com/pkgforge-dev/ares-emu-appimage/releases/latest) | [Click here](https://github.com/pkgforge-dev/ares-emu-appimage/releases/tag/nightly) | [Click here](https://github.com/ares-emulator/ares) |
 
-* [Latest Stable Release](https://github.com/pkgforge-dev/ares-emu-appimage/releases/latest)
+</div>
 
-* [Latest Nightly Release](https://github.com/pkgforge-dev/ares-emu-appimage/releases/tag/nightly)
+---
 
+AppImage made using [quick-sharun](https://github.com/pkgforge-dev/Anylinux-AppImages/blob/main/useful-tools/quick-sharun.sh), which makes it extremely easy to turn any binary into a portable package reliably without using containers or similar tricks.
+
+**This AppImage bundles everything and it should work on any Linux distro, including old and musl-based ones.**
+
+This AppImage doesn't require FUSE to run at all, thanks to the [uruntime](https://github.com/VHSgunzo/uruntime).
+
+This AppImage is also supplied with a self-updater by default, so any updates to this application won't be missed, you will be prompted for permission to check for updates and if agreed you will then be notified when a new update is available.
+
+Self-updater is disabled by default if AppImage managers like [am](https://github.com/ivan-hc/AM), [soar](https://github.com/pkgforge/soar) or [dbin](https://github.com/xplshn/dbin) exist, which manage AppImage updates.
+
+<details>
+  <summary><b><i>raison d'être</i></b></summary>
+    <img src="https://github.com/user-attachments/assets/d40067a6-37d2-4784-927c-2c7f7cc6104b" alt="Inspiration Image">
+  </a>
+</details>
+
+---
+
+More at: [AnyLinux-AppImages](https://pkgforge-dev.github.io/Anylinux-AppImages/)

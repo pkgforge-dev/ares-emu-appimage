@@ -1,62 +1,62 @@
 #!/bin/sh
 
-set -ex
-EXTRA_PACKAGES="https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/refs/heads/main/useful-tools/get-debloated-pkgs.sh"
+set -eu
 
-echo "Installing dependencies..."
+ARCH=$(uname -m)
+
+echo "Installing package dependencies..."
 echo "---------------------------------------------------------------"
 pacman -Syu --noconfirm \
-	base-devel             \
 	cmake                  \
-	ccache                 \
-	curl                   \
 	gcc-libs               \
-	git                    \
-	gtk3                   \
 	libao                  \
-	libdecor               \
-	libpulse               \
 	libretro-shaders-slang \
 	libx11                 \
 	libxrandr              \
 	libxss                 \
 	ninja                  \
 	openal                 \
-	pipewire-audio         \
 	pkgconf                \
-	pulseaudio             \
-	pulseaudio-alsa        \
 	rust                   \
 	sdl3                   \
-	wget                   \
-	xorg-server-xvfb       \
-	zlib                   \
-	zsync
-
+	zlib
 
 echo "Installing debloated packages..."
 echo "---------------------------------------------------------------"
-wget --retry-connrefused --tries=30 "$EXTRA_PACKAGES" -O ./get-debloated-pkgs.sh
-chmod +x ./get-debloated-pkgs.sh
-./get-debloated-pkgs.sh --add-common
+get-debloated-pkgs --add-common --prefer-nano libdecor-mini
 
-# Make librashader
-echo "Making extra dependencies..."
+# Comment this out if you need an AUR package
+make-aur-package librashader
+
+# If the application needs to be manually built that has to be done down here
+
+echo "Building ares..."
 echo "---------------------------------------------------------------"
+git clone https://github.com/ares-emulator/ares ./ares && (
+	cd ./ares
 
-# fix nonsense
-sed -i 's|EUID == 0|EUID == 69|g' /usr/bin/makepkg
-sed -i 's|-O2|-O3|; s|MAKEFLAGS=.*|MAKEFLAGS="-j$(nproc)"|; s|#MAKEFLAGS|MAKEFLAGS|' /etc/makepkg.conf
-cat /etc/makepkg.conf
+	# Determine to build nightly or stable
+	if [ "${DEVEL_RELEASE-}" = 1 ]; then
+		git rev-parse --short HEAD > ~/version
+	else
+		git fetch --tags origin
+		TAG=$(git tag --sort=-v:refname | grep -vi 'rc\|alpha\|beta\|nightly' | head -1)
+		git checkout "$TAG"
+		echo "$TAG" > ~/version
+	fi
 
-git clone "https://aur.archlinux.org/librashader.git" ./librashader
-( cd ./librashader
-  export RUSTC_WRAPPER="sccache"
-  makepkg -fs --noconfirm
-  sccache --show-stats
-  ls -la .
-  pacman --noconfirm -U *.pkg.tar.*
+	mkdir -p ./build
+	cd ./build
+	cmake ../ \
+		-G Ninja                     \
+		-W no-dev                    \
+		-D CMAKE_BUILD_TYPE=Release  \
+		-D ARES_BUNDLE_SHADERS=ON    \
+		-D ARES_BUILD_LOCAL=OFF      \
+		-D CMAKE_INSTALL_PREFIX=/usr \
+		-D ARES_BUILD_OFFICIAL=YES   \
+		-D ARES_SKIP_DEPS=ON         \
+		--fresh
+	cmake --build ./ -j"$(nproc)"
+	cmake --install ./
 )
-
-echo "All done!"
-echo "---------------------------------------------------------------"
